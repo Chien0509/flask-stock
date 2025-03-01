@@ -3,40 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 波段選股系統</title>
+    <title>📊 AI 股票分析系統</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
         input, button { padding: 10px; margin: 10px; font-size: 16px; }
-        .result { margin-top: 20px; font-size: 18px; }
+        .result { margin-top: 20px; font-size: 18px; padding: 20px; border: 1px solid #ddd; display: inline-block; text-align: left; background-color: #f9f9f9; }
         .buy { color: green; font-weight: bold; }
         .hold { color: orange; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>AI 波段選股系統 📈</h1>
-    <form method="post">
+    <h1>📊 AI 股票分析系統</h1>
+    <form method="post" action="/">
         <label for="stock_code">輸入股票代號（台股格式：2330.TW）：</label><br>
         <input type="text" id="stock_code" name="stock_code" required>
         <button type="submit">查詢</button>
     </form>
 
     {% if result %}
-        {% if result.status == "success" %}
-            <div class="result">
-                <h2>股票代號：{{ result.stock }}</h2>
-                <p>RSI：{{ result.rsi }}</p>
-                <p>MACD：{{ result.macd }}（信號線：{{ result.macd_signal }}）</p>
-                <p>KD 指標：{{ result.kd_k }}（D值：{{ result.kd_d }}）</p>
-                <p>均線（MA）：5日={{ result.ma5 }}，10日={{ result.ma10 }}，20日={{ result.ma20 }}</p>
-                <h2 class="{% if result.signal == 'BUY ✅' %}buy{% else %}hold{% endif %}">
-                    訊號：{{ result.signal }}
-                </h2>
-            </div>
-        {% else %}
-            <div class="result">
-                <h2 style="color: red;">錯誤：{{ result.message }}</h2>
-            </div>
-        {% endif %}
+    {% if result.status == "success" %}
+        <div class="result">
+            <h2>📈 股票代號：{{ result.stock }}（{{ result.stock_name }}）</h2>
+            <p>💰 當前股價：<strong>{{ result.current_price }} 元</strong></p>
+            <p>✅ 建議買入價：<strong style="color: green;">{{ result.suggested_buy }} 元</strong></p>
+            <p>❌ 建議賣出價：<strong style="color: red;">{{ result.suggested_sell }} 元</strong></p>
+            <p>🎯 停利價：<strong style="color: blue;">{{ result.take_profit }} 元</strong></p>
+            <p>⚠️ 停損價：<strong style="color: orange;">{{ result.stop_loss }} 元</strong></p>
+
+            <h2 class="{% if result.signal == 'BUY ✅' %}buy{% else %}hold{% endif %}">
+                📊 訊號：{{ result.signal }}
+            </h2>
+
+            <h3>📈 技術指標分析</h3>
+            <p>📊 RSI 指標：{{ result.rsi }}</p>
+            <p>📊 MACD 指標：{{ result.macd }}（信號線：{{ result.macd_signal }}）</p>
+            <p>📊 KD 指標：{{ result.kd_k }}（D值：{{ result.kd_d }}）</p>
+            <p>📊 均線（MA）：5日={{ result.ma5 }}，10日={{ result.ma10 }}，20日={{ result.ma20 }}，30日={{ result.ma30 }}</p>
+        </div>
+    {% else %}
+        <div class="error">
+            <h2>❌ 錯誤：{{ result.message }}</h2>
+        </div>
     {% endif %}
+{% endif %}
+
 </body>
 </html>
